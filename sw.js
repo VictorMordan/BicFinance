@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bicfinance-cache-v2';
+const CACHE_NAME = 'bicfinance-cache-v1';
 
 // Lista de archivos locales y externos que queremos congelar en el dispositivo
 const ASSETS_TO_CACHE = [
