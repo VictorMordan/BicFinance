@@ -1,0 +1,526 @@
+/* ==========================================================================
+   1. VARIABLES Y CONFIGURACIÓN BASE
+   ========================================================================== */
+:root {
+    --bg-primary: #f8fafc;
+    --bg-card: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    
+    /* Colores extraídos de tu logo */
+    --color-blue: #1d4ed8;
+    --color-blue-light: #eff6ff;
+    --color-green: #10b981;
+    --color-green-light: #ecfdf5;
+    
+    /* Prioridades */
+    --badge-alta: #ef4444;
+    --badge-alta-bg: #fee2e2;
+    --badge-media: #f59e0b;
+    --badge-media-bg: #fef3c7;
+    --badge-baja: #3b82f6;
+    --badge-baja-bg: #dbeafe;
+
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-main);
+    min-height: 100vh;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ==========================================================================
+   2. PANTALLA DE LOGEO (Auth)
+   ========================================================================== */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.auth-card {
+    background: var(--bg-card);
+    padding: 40px 30px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-logo {
+    width: 180px; /* Tamaño ajustado y responsivo para el logo */
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.login-subtitle {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-bottom: 30px;
+}
+
+.btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px;
+    background: white;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    color: var(--text-main);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-google:hover {
+    background: #f1f5f9;
+    transform: translateY(-2px);
+}
+
+.btn-google img {
+    width: 22px;
+    height: 22px;
+}
+
+/* ==========================================================================
+   3. HEADER / NAVBAR
+   ========================================================================== */
+.main-header {
+    background: var(--bg-card);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-logo {
+    height: 40px;
+    width: auto;
+}
+
+.month-selector {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: var(--bg-primary);
+    padding: 8px 16px;
+    border-radius: 20px;
+}
+
+.month-selector button {
+    background: none;
+    border: none;
+    color: var(--color-blue);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.month-selector button:hover {
+    transform: scale(1.2);
+}
+
+#current-month-display {
+    font-weight: 600;
+    min-width: 100px;
+    text-align: center;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--color-blue);
+}
+
+#btn-logout {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+#btn-logout:hover {
+    color: #ef4444;
+}
+
+/* ==========================================================================
+   4. DASHBOARD - TARJETAS (Cards)
+   ========================================================================== */
+.dashboard-content {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: var(--bg-card);
+    padding: 24px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.card h3 {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.card .amount {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+/* Barra de progreso para Gastado */
+.progress-bar-container {
+    width: 100%;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    margin-top: 12px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: var(--color-green);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+}
+
+/* ==========================================================================
+   5. DISTRIBUCIÓN PRINCIPAL (Gráfico y Tabla)
+   ========================================================================== */
+.main-data-layout {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+    align-items: start;
+}
+
+.chart-box, .table-box {
+    background: var(--bg-card);
+    padding: 24px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.chart-box h3 {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.chart-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 250px;
+    margin: 0 auto;
+}
+
+/* Filtros y Tabla */
+.table-filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    justify-content: flex-start;
+}
+
+.table-filters select {
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    background-color: var(--bg-primary);
+    border-radius: 8px;
+    color: var(--text-main);
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto; /* Permite scroll horizontal solo si la tabla es muy grande en móviles */
+}
+
+.expenses-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.expenses-table th {
+    padding: 12px 16px;
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.expenses-table td {
+    padding: 16px;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.95rem;
+    vertical-align: middle;
+}
+
+/* Badges de Prioridad */
+.badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge.alta { color: var(--badge-alta); background: var(--badge-alta-bg); }
+.badge.media { color: var(--badge-media); background: var(--badge-media-bg); }
+.badge.baja { color: var(--badge-baja); background: var(--badge-baja-bg); }
+
+/* Botón de eliminar gasto */
+.btn-delete-expense {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.btn-delete-expense:hover {
+    color: #ef4444;
+}
+
+/* ==========================================================================
+   6. BOTÓN FLOTANTE (FAB)
+   ========================================================================== */
+.fab-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 56px;
+    height: 56px;
+    background-color: var(--color-blue);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(29, 78, 216, 0.3);
+    transition: var(--transition);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99;
+}
+
+.fab-btn:hover {
+    transform: scale(1.1) rotate(90deg);
+}
+
+/* ==========================================================================
+   7. MODAL (Formulario Emergente)
+   ========================================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: var(--transition);
+}
+
+.modal-card {
+    background: var(--bg-card);
+    width: 100%;
+    max-width: 450px;
+    border-radius: var(--border-radius);
+    padding: 24px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h2 {
+    font-size: 1.3rem;
+    color: var(--text-main);
+}
+
+.close-modal-btn {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--text-main);
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="date"],
+.form-group select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    font-size: 0.95rem;
+    transition: var(--transition);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--color-blue);
+    box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+}
+
+.radio-group {
+    display: flex;
+    gap: 20px;
+    padding: 5px 0;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: 400;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--color-blue);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: var(--transition);
+}
+
+.btn-submit:hover {
+    background-color: #1d4ed8;
+}
+
+/* ==========================================================================
+   8. RESPONSIVIDAD (Media Queries para Móviles)
+   ========================================================================== */
+@media (max-width: 900px) {
+    .main-data-layout {
+        grid-template-columns: 1fr; /* El gráfico se pone arriba y la tabla abajo */
+    }
+    
+    .chart-box {
+        max-width: 400px;
+        margin: 0 auto;
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-header {
+        padding: 15px 20px;
+    }
+
+    .header-logo {
+        height: 32px;
+    }
+
+    .cards-grid {
+        grid-template-columns: 1fr; /* Las tarjetas se apilan en una sola columna */
+        gap: 15px;
+    }
+
+    .card {
+        padding: 18px;
+    }
+
+    .card .amount {
+        font-size: 1.5rem;
+    }
+
+    .table-filters {
+        flex-direction: column; /* Filtros uno abajo del otro en vertical */
+    }
+
+    .table-filters select {
+        width: 100%;
+    }
+    
+    .fab-btn {
+        bottom: 20px;
+        right: 20px;
+    }
+}

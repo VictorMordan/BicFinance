@@ -1,0 +1,18 @@
+{
+  "short_name": "BicFinance",
+  "name": "BicFinance - Gestión Financiera",
+  "description": "Rework de la aplicación de gestión financiera personal BicFinance.",
+  "icons": [
+    {
+      "src": "assets/logo que es.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#f8fafc",
+  "theme_color": "#1d4ed8",
+  "display": "standalone",
+  "orientation": "portrait"
+}

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BicFinance - Gestión Financiera</title>
+    <!-- Logo al lado de la pagina -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/Logo moderno para BicFinance cambio.png">
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Iconos Gratuitos (FontAwesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Manifesto de la PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e3a8a">
+</head>
+<body>
+
+    <!-- 1. PANTALLA DE LOGEO (Se muestra por defecto) -->
+    <div id="login-screen" class="auth-container">
+        <div class="auth-card">
+            <!-- Referencia al logo que subiste -->
+            <img src="assets/logo que es.png" alt="BicFinance Logo" class="login-logo">
+            <p class="login-subtitle">Gestión Financiera Personal</p>
+            <button id="btn-login" class="btn-google">
+                <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" alt="Google icon">
+                Continuar con Google
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. DASHBOARD PRINCIPAL (Oculto hasta que se autentique) -->
+    <div id="app-screen" class="dashboard-container hidden">
+        
+        <!-- Encabezado / Navbar -->
+        <header class="main-header">
+            <div class="header-brand">
+                <img src="assets/logo que es.png" alt="BicFinance" class="header-logo">
+            </div>
+            <!-- Selector de Meses -->
+            <div class="month-selector">
+                <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
+                <span id="current-month-display">Julio 2026</span>
+                <button id="next-month"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <!-- Perfil de Usuario -->
+            <div class="user-profile">
+                <img id="user-avatar" src="" alt="Avatar" class="avatar">
+                <button id="btn-logout" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        </header>
+
+        <!-- Contenido Métricas -->
+        <main class="dashboard-content">
+            
+            <!-- Fila de Tarjetas (Cards) -->
+            <section class="cards-grid">
+                <div class="card">
+                    <h3>Presupuesto del mes</h3>
+                    <p id="txt-budget" class="amount">RD$0.00</p>
+                </div>
+                <div class="card">
+                    <h3>Gastado</h3>
+                    <p id="txt-spent" class="amount">RD$0.00</p>
+                    <div class="progress-bar-container">
+                        <div id="progress-spent" class="progress-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Disponible</h3>
+                    <p id="txt-available" class="amount">RD$0.00</p>
+                </div>
+            </section>
+
+            <!-- Sección Gráfico y Tabla -->
+            <section class="main-data-layout">
+                <!-- Contenedor del Gráfico de Dona -->
+                <div class="chart-box">
+                    <h3>Método de pago</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="paymentChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Contenedor de la Tabla de Gastos -->
+                <div class="table-box">
+                    <!-- Filtros superiores de la tabla -->
+                    <div class="table-filters">
+                        <select id="filter-priority">
+                            <option value="all">Todas las prioridades</option>
+                            <option value="Alta">Alta</option>
+                            <option value="Media">Media</option>
+                            <option value="Baja">Baja</option>
+                        </select>
+                        <select id="filter-method">
+                            <option value="all">Todos los métodos</option>
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Débito">Débito</option>
+                            <option value="Crédito">Crédito</option>
+                        </select>
+                    </div>
+
+                    <!-- Estructura de Lista Responsiva -->
+                    <div class="table-responsive">
+                        <table class="expenses-table">
+                            <thead>
+                                <tr>
+                                    <th>Descripción</th>
+                                    <th>Fecha</th>
+                                    <th>Prioridad</th>
+                                    <th>Pago</th>
+                                    <th>Monto</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="expenses-list">
+                                <!-- Los gastos de Firebase se insertarán aquí dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Botón Flotante para añadir gasto -->
+        <button id="btn-open-modal" class="fab-btn">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+
+    <!-- 3. MODAL PARA NUEVO GASTO (Oculto por defecto) -->
+    <div id="expense-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>Nuevo gasto</h2>
+                <button id="btn-close-modal" class="close-modal-btn">&times;</button>
+            </div>
+            <form id="expense-form">
+                <div class="form-group">
+                    <label for="input-description">Descripción</label>
+                    <input type="text" id="input-description" required placeholder="Ej. Supermercado">
+                </div>
+                <div class="form-group">
+                    <label for="input-amount">Monto (RD$)</label>
+                    <input type="number" id="input-amount" required step="0.01" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label>Tipo de fecha</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="date-type" value="exact" checked> Día exacto</label>
+                        <label><input type="radio" name="date-type" value="approx"> Día aproximado</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="input-date">Fecha</label>
+                    <input type="date" id="input-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="select-priority">Prioridad</label>
+                    <select id="select-priority">
+                        <option value="Baja">Baja</option>
+                        <option value="Media" selected>Media</option>
+                        <option value="Alta">Alta</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="select-method">Método de pago</label>
+                    <select id="select-method">
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="Débito" selected>Débito</option>
+                        <option value="Crédito">Crédito</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-submit">Guardar gasto</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Carga de Librería de Gráficos desde CDN (Limpio y sin npm) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Scripts de la Aplicación (Usamos type="module" para poder usar import/export) -->
+    <script type="module" src="js/app.js"></script>
+    
+    <!-- Inicialización básica del Service Worker de la PWA -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then(() => console.log('Service Worker Registrado con éxito.'))
+                .catch(err => console.error('Error al registrar Service Worker:', err));
+        }
+    </script>
+</body>
+</html>
