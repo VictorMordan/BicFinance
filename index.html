@@ -1,195 +1,207 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BicFinance - Gestión Financiera</title>
-    <!-- Logo al lado de la pagina -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BicFinance - Control de Gastos</title>
+  <!-- Logo al lado de la pagina -->
     <link rel="icon" type="image/png" sizes="32x32" href="assets/Logo moderno para BicFinance cambio.png">
-    <!-- Estilos personalizados -->
-    <link rel="stylesheet" href="css/styles.css">
-    <!-- Iconos Gratuitos (FontAwesome) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Manifesto de la PWA -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1e3a8a">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800">
 
-    <!-- 1. PANTALLA DE LOGEO (Se muestra por defecto) -->
-    <div id="login-screen" class="auth-container">
-        <div class="auth-card">
-            <!-- Referencia al logo que subiste -->
-            <img src="assets/logo que es.png" alt="BicFinance Logo" class="login-logo">
-            <p class="login-subtitle">Gestión Financiera Personal</p>
-            <button id="btn-login" class="btn-google">
-                <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" alt="Google icon">
-                Continuar con Google
-            </button>
-        </div>
-    </div>
+  <header id="main-header" class="hidden bg-white shadow-sm border-b border-gray-100 sticky top-0 z-40 px-4 py-3 sm:px-8">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <img src="assets/logo que es.png" alt="BicFinance Logo" class="h-8 w-auto onerror="this.src='bicfinance-logo.png'">
+      </div>
 
-    <!-- 2. DASHBOARD PRINCIPAL (Oculto hasta que se autentique) -->
-    <div id="app-screen" class="dashboard-container hidden">
-        
-        <!-- Encabezado / Navbar -->
-        <header class="main-header">
-            <div class="header-brand">
-                <img src="assets/logo que es.png" alt="BicFinance" class="header-logo">
-            </div>
-            <!-- Selector de Meses -->
-            <div class="month-selector">
-                <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
-                <span id="current-month-display">Julio 2026</span>
-                <button id="next-month"><i class="fas fa-chevron-right"></i></button>
-            </div>
-            <!-- Perfil de Usuario -->
-            <div class="user-profile">
-                <img id="user-avatar" src="" alt="Avatar" class="avatar">
-                <button id="btn-logout" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
-            </div>
-        </header>
-
-        <!-- Contenido Métricas -->
-        <main class="dashboard-content">
-            
-            <!-- Fila de Tarjetas (Cards) -->
-            <section class="cards-grid">
-                <div class="card">
-                    <h3>Presupuesto del mes</h3>
-                    <p id="txt-budget" class="amount">RD$0.00</p>
-                </div>
-                <div class="card">
-                    <h3>Gastado</h3>
-                    <p id="txt-spent" class="amount">RD$0.00</p>
-                    <div class="progress-bar-container">
-                        <div id="progress-spent" class="progress-bar" style="width: 0%"></div>
-                    </div>
-                </div>
-                <div class="card">
-                    <h3>Disponible</h3>
-                    <p id="txt-available" class="amount">RD$0.00</p>
-                </div>
-            </section>
-
-            <!-- Sección Gráfico y Tabla -->
-            <section class="main-data-layout">
-                <!-- Contenedor del Gráfico de Dona -->
-                <div class="chart-box">
-                    <h3>Método de pago</h3>
-                    <div class="chart-wrapper">
-                        <canvas id="paymentChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Contenedor de la Tabla de Gastos -->
-                <div class="table-box">
-                    <!-- Filtros superiores de la tabla -->
-                    <div class="table-filters">
-                        <select id="filter-priority">
-                            <option value="all">Todas las prioridades</option>
-                            <option value="Alta">Alta</option>
-                            <option value="Media">Media</option>
-                            <option value="Baja">Baja</option>
-                        </select>
-                        <select id="filter-method">
-                            <option value="all">Todos los métodos</option>
-                            <option value="Efectivo">Efectivo</option>
-                            <option value="Débito">Débito</option>
-                            <option value="Crédito">Crédito</option>
-                        </select>
-                    </div>
-
-                    <!-- Estructura de Lista Responsiva -->
-                    <div class="table-responsive">
-                        <table class="expenses-table">
-                            <thead>
-                                <tr>
-                                    <th>Descripción</th>
-                                    <th>Fecha</th>
-                                    <th>Prioridad</th>
-                                    <th>Pago</th>
-                                    <th>Monto</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody id="expenses-list">
-                                <!-- Los gastos de Firebase se insertarán aquí dinámicamente -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <!-- Botón Flotante para añadir gasto -->
-        <button id="btn-open-modal" class="fab-btn">
-            <i class="fas fa-plus"></i>
+      <div class="flex items-center gap-4 bg-gray-100 px-4 py-2 rounded-xl shadow-inner">
+        <button id="btn-mes-anterior" class="text-blue-600 hover:text-blue-800 transition-colors p-1">
+          <i class="fas fa-chevron-left"></i>
         </button>
+        <span id="txt-mes-actual" class="font-semibold text-gray-700 min-w-[100px] text-center capitalize text-sm sm:text-base">Cargando...</span>
+        <button id="btn-mes-siguiente" class="text-blue-600 hover:text-blue-800 transition-colors p-1">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <img id="img-usuario" src="https://via.placeholder.com/40" alt="Avatar" class="w-9 h-9 rounded-full border-2 border-blue-500 object-cover">
+        <button id="btn-logout" class="text-gray-400 hover:text-red-500 transition-colors text-xl p-1" title="Cerrar Sesión">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-6 sm:px-8 sm:py-8">
+    
+    <div id="seccion-login" class="flex flex-col items-center justify-center py-20 bg-white rounded-3xl shadow-sm border border-gray-100 max-w-md mx-auto my-10 px-6">
+      <img src="assets/Logo moderno para BicFinance cambio.png" alt="Logo" class="h-16 w-auto mb-8">
+      <h2 class="text-2xl font-bold text-gray-800 text-center mb-2">Bienvenido a BicFinance</h2>
+      <p class="text-sm text-gray-500 text-center mb-8">Gestiona tus finanzas de forma inteligente, rápida y segura.</p>
+      <button id="btn-login-google" class="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 rounded-xl py-3 px-4 font-medium text-gray-700 hover:bg-gray-50 active:bg-gray-100 shadow-sm transition-all cursor-pointer">
+        <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" alt="Google" class="w-5 h-5">
+        Continuar con Google
+      </button>
     </div>
 
-    <!-- 3. MODAL PARA NUEVO GASTO (Oculto por defecto) -->
-    <div id="expense-modal" class="modal-overlay hidden">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h2>Nuevo gasto</h2>
-                <button id="btn-close-modal" class="close-modal-btn">&times;</button>
-            </div>
-            <form id="expense-form">
-                <div class="form-group">
-                    <label for="input-description">Descripción</label>
-                    <input type="text" id="input-description" required placeholder="Ej. Supermercado">
-                </div>
-                <div class="form-group">
-                    <label for="input-amount">Monto (RD$)</label>
-                    <input type="number" id="input-amount" required step="0.01" placeholder="0.00">
-                </div>
-                <div class="form-group">
-                    <label>Tipo de fecha</label>
-                    <div class="radio-group">
-                        <label><input type="radio" name="date-type" value="exact" checked> Día exacto</label>
-                        <label><input type="radio" name="date-type" value="approx"> Día aproximado</label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="input-date">Fecha</label>
-                    <input type="date" id="input-date" required>
-                </div>
-                <div class="form-group">
-                    <label for="select-priority">Prioridad</label>
-                    <select id="select-priority">
-                        <option value="Baja">Baja</option>
-                        <option value="Media" selected>Media</option>
-                        <option value="Alta">Alta</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="select-method">Método de pago</label>
-                    <select id="select-method">
-                        <option value="Efectivo">Efectivo</option>
-                        <option value="Débito" selected>Débito</option>
-                        <option value="Crédito">Crédito</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn-submit">Guardar gasto</button>
-            </form>
+    <div id="seccion-dashboard" class="hidden space-y-6">
+      
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white p-5 rounded-2xl shadow-xs border border-gray-100 flex justify-between items-start">
+          <div>
+            <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Presupuesto del mes</p>
+            <h3 id="txt-presupuesto" class="text-xl sm:text-2xl font-bold text-gray-800 mt-1">RD$0.00</h3>
+          </div>
+          <button id="btn-editar-presupuesto" class="text-blue-600 hover:text-blue-800 hover:bg-blue-50 p-2 rounded-lg transition-colors cursor-pointer" title="Editar presupuesto">
+            <i class="fas fa-pen text-sm"></i>
+          </button>
         </div>
-    </div>
 
-    <!-- Carga de Librería de Gráficos desde CDN (Limpio y sin npm) -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- Scripts de la Aplicación (Usamos type="module" para poder usar import/export) -->
-    <script type="module" src="js/app.js"></script>
-    
-    <!-- Inicialización básica del Service Worker de la PWA -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js')
-                .then(() => console.log('Service Worker Registrado con éxito.'))
-                .catch(err => console.error('Error al registrar Service Worker:', err));
-        }
-    </script>
+        <div class="bg-white p-5 rounded-2xl shadow-xs border border-gray-100">
+          <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Gastado</p>
+          <h3 id="txt-gastado" class="text-xl sm:text-2xl font-bold text-gray-800 mt-1">RD$0.00</h3>
+          <div class="w-full bg-gray-100 h-2 rounded-full mt-3 overflow-hidden">
+            <div id="barra-progreso" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl shadow-xs border border-gray-100">
+          <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Disponible</p>
+          <h3 id="txt-disponible" class="text-xl sm:text-2xl font-bold text-emerald-600 mt-1">RD$0.00</h3>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <div class="bg-white p-5 rounded-2xl shadow-xs border border-gray-100 flex flex-col justify-between items-center min-h-[320px]">
+          <h4 class="text-sm font-semibold text-gray-700 w-full text-left mb-4 border-b border-gray-50 pb-2">Método de pago</h4>
+          <div class="relative w-48 h-48 sm:w-56 sm:h-56">
+            <canvas id="chart-metodos"></canvas>
+          </div>
+          <div id="chart-placeholder" class="text-xs text-gray-400 mt-4 text-center hidden">Registra gastos para ver el gráfico</div>
+        </div>
+
+        <div class="lg:col-span-2 bg-white p-5 rounded-2xl shadow-xs border border-gray-100 space-y-4 flex flex-col">
+          
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3">
+            <select id="filtro-prioridad" class="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-600 focus:outline-hidden focus:border-blue-500 transition-colors">
+              <option value="todos">Todas las prioridades</option>
+              <option value="Alta">Alta</option>
+              <option value="Media">Media</option>
+              <option value="Baja">Baja</option>
+            </select>
+            <select id="filtro-metodo" class="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-600 focus:outline-hidden focus:border-blue-500 transition-colors">
+              <option value="todos">Todos los métodos</option>
+              <option value="Débito">Débito</option>
+              <option value="Crédito">Crédito</option>
+              <option value="Efectivo">Efectivo</option>
+            </select>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-gray-100">
+            <table class="w-full min-w-[550px] border-collapse text-left text-sm">
+              <thead class="bg-gray-50 text-gray-500 uppercase text-xs font-semibold tracking-wider border-b border-gray-100">
+                <tr>
+                  <th class="px-4 py-3">Descripción</th>
+                  <th class="px-4 py-3">Fecha</th>
+                  <th class="px-4 py-3">Prioridad</th>
+                  <th class="px-4 py-3">Pago</th>
+                  <th class="px-4 py-3 text-right">Monto</th>
+                  <th class="px-4 py-3 text-center"></th>
+                </tr>
+              </thead>
+              <tbody id="tabla-gastos-cuerpo" class="divide-y divide-gray-100 text-gray-700">
+                </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <button id="btn-abrir-modal" class="hidden fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white w-14 h-14 rounded-full shadow-lg hover:shadow-xl flex items-center justify-center text-2xl transition-all hover:scale-105 active:scale-95 cursor-pointer z-40">
+    <i class="fas fa-plus"></i>
+  </button>
+
+  <div id="modal-gasto" class="fixed inset-0 bg-gray-900/60 backdrop-blur-xs flex items-center justify-center hidden z-50 p-4">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl relative flex flex-col gap-4 border border-gray-100">
+      
+      <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+        <h3 class="text-lg font-bold text-gray-800">Agregar Nuevo Gasto</h3>
+        <button id="btn-cerrar-modal" class="text-gray-400 hover:text-gray-600 p-1 rounded-lg transition-colors cursor-pointer">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+
+      <form id="form-gasto" class="space-y-4 text-sm" autocomplete="off">
+        <div>
+          <label class="block font-medium text-gray-600 mb-1">Descripción</label>
+          <input type="text" id="in-descripcion" required placeholder="Ej. Supermercado, Gasolina..." class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-hidden focus:border-blue-500 focus:bg-white transition-all">
+        </div>
+
+        <div>
+          <label class="block font-medium text-gray-600 mb-1">Monto (RD$)</label>
+          <input type="number" step="0.01" id="in-monto" required placeholder="0.00" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-hidden focus:border-blue-500 focus:bg-white transition-all">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-medium text-gray-600 mb-1">Método de pago</label>
+            <select id="in-metodo" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-hidden focus:border-blue-500 transition-all">
+              <option value="Débito">Débito</option>
+              <option value="Crédito">Crédito</option>
+              <option value="Efectivo">Efectivo</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-medium text-gray-600 mb-1">Prioridad</label>
+            <select id="in-prioridad" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-hidden focus:border-blue-500 transition-all">
+              <option value="Baja">Baja</option>
+              <option value="Media">Media</option>
+              <option value="Alta">Alta</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-medium text-gray-600 mb-2">Tipo de registro de fecha</label>
+          <div class="grid grid-cols-2 gap-2 p-1 bg-gray-100 rounded-xl">
+            <button type="button" id="tab-dia-unico" class="py-2 text-center rounded-lg font-medium bg-white shadow-xs text-blue-600 transition-all cursor-pointer">Día único</button>
+            <button type="button" id="tab-dias-aprox" class="py-2 text-center rounded-lg font-medium text-gray-500 hover:text-gray-700 transition-all cursor-pointer">Días aprox.</button>
+          </div>
+        </div>
+
+        <div id="wrapper-fechas" class="space-y-3 pt-1">
+          <div id="box-dia-unico">
+            <label class="block font-medium text-gray-500 mb-1 text-xs">Selecciona el día del mes</label>
+            <input type="number" id="in-dia-unico" min="1" max="31" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-hidden focus:border-blue-500">
+          </div>
+          
+          <div id="box-dias-aprox" class="hidden grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-medium text-gray-500 mb-1 text-xs">Desde el día</label>
+              <input type="number" id="in-dia-desde" min="1" max="31" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-hidden focus:border-blue-500">
+            </div>
+            <div>
+              <label class="block font-medium text-gray-500 mb-1 text-xs">Hasta el día</label>
+              <input type="number" id="in-dia-hasta" min="1" max="31" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-hidden focus:border-blue-500">
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl shadow-md hover:shadow-lg transition-all mt-4 cursor-pointer active:scale-98">
+          Agregar Gasto
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
